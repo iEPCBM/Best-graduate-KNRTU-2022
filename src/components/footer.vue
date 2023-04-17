@@ -1,7 +1,7 @@
 <template lang="html">
-  <div class="footer">
-    <p>Copyright &copy; 2022 Rishat. D. Kagirov</p>
-  </div>
+  <footer class="footer">
+    <p>Исходный код: Copyright &copy; 2022 Rishat D. Kagirov</p>
+  </footer>
 </template>
 
 <script>

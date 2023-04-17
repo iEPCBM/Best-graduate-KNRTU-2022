@@ -1,15 +1,15 @@
 <template lang="html">
-  <div class="header-wrapper">
+  <header class="header-wrapper">
     <h2 class="title">Лучший выпускник КНИТУ 2022</h2>
-    <div class="nav-wrapper">
+    <nav class="nav-wrapper">
       <ul>
         <li><a @click="showModalAbout" href="#about">О проекте</a></li>
       </ul>
-    </div>
+    </nav>
     <ModalAbout
       v-if="isModalAboutVisible"
       @close="closeModalAbout"/>
-  </div>
+  </header>
 </template>
 
 <script>

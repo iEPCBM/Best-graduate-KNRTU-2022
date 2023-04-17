@@ -4,7 +4,7 @@
       <button type="button" class="btn-close" @click="close">&times;</button>
       <div class="card-details">
         <div class="avatar avatar-wrapper">
-          <img class="avatar-img" :src="avatarUrl" alt="">
+          <img ref="modal_avatar" class="avatar-img" :alt="name" :src="avatarUrl_d">
         </div>
         <div class="bdetails-wrapper">
           <p class="details name-wrapper">{{ name }} {{ patronym }}</p>
@@ -14,11 +14,11 @@
           </div>
           <p class="details major-wrapper">{{ isSpecialist() ? 'Специальность' : 'Направление' }}: <span>{{ major_code }} {{ major_title }}</span></p>
           <p class="details work-wrapper">Тема {{ parseInt(major_code.split('.')[1]) == 4 ? 'диссертации' : 'ВКР' }}: <span>{{ workTitle }}</span></p>
-          <p v-if="avgScore" class="details avgscore-wrapper">Средний балл: <span>{{ avgScore }}</span></p>
+          <p v-if="avgScore" class="details avgscore-wrapper">Средний балл: <span>{{ avgScore.toString().replaceAll(".", ",") }}</span></p>
         </div>
-        <div class="details-ext achievements-wrapper">
+        <div v-if="isAchievementsEmpty" class="details-ext achievements-wrapper">
           <h2>Достижения</h2>
-          <p v-html="achievements.trim().replaceAll('\n', '<br>')"></p>
+          <p v-html="achievements"></p>
         </div>
         <div v-if="email||telephone||site" class="details-ext contacts-wrapper">
           <h2>Контакты</h2>
@@ -35,6 +35,19 @@
 export default {
   name: 'ModalCard',
   emits: ["close"],
+  mounted() {
+    this.loadCachedImage();
+  },
+  created() {
+    this.isAchievementsEmpty =
+      this.achievements.replace(/<\/?[^>]+(?:>|$)|&nbsp;|\s|/g, "").length!==0;
+  },
+  data() {
+    return {
+      avatarUrl_d: "",
+      isAchievementsEmpty: false
+    };
+  },
   methods: {
     close() {
       history.pushState("",
@@ -49,7 +62,33 @@ export default {
         return true;
       }
       return false;
+    },
+    loadCachedImage() {
+      let cw = this.$refs.modal_avatar.clientWidth;
+      let optSize = {w: 0, h: 0};
+      let minDelta;
+      if (this.cachedImageSizes.length>0) {
+        this.cachedImageSizes.forEach((item) => {
+          if (!item["crop"]) {
+            if (minDelta!==undefined&&Math.abs(cw-item["w"])<minDelta) {
+              optSize.w = item["w"];
+              optSize.h = item["h"];
+              minDelta = Math.abs(cw-item["w"]);
+            }
+            else if (minDelta===undefined) {
+              optSize.w = item["w"];
+              optSize.h = item["h"];
+              minDelta = Math.abs(cw-item["w"]);
+            }
+          }
+        });
+        this.avatarUrl_d = this.avatarUrl+"?size="+optSize.w+"x"+optSize.h+"&q=90";
+      }
+      else {
+        this.avatarUrl_d = this.avatarUrl;
+      }
     }
+
   },
   props: {
     name: String,
@@ -64,7 +103,8 @@ export default {
     achievements: String,
     email: String,
     telephone: String,
-    site: String
+    site: String,
+    cachedImageSizes: Object
   }
 }
 </script>

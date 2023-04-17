@@ -1,10 +1,14 @@
 <template lang="html">
   <section class="banner-wrapper">
-    <img class="banner-bg" src="../assets/m_statue_cg.png" alt="">
-    <div class="tbanner-container">
-      <p>Лучший</p>
-      <p>выпускник</p>
-      <p>КНИТУ <span class="tb-sel">2022</span></p>
+    <video class="banner-bg" autoplay muted loop id="video-pb">
+      <source src="@/assets/playback.mp4" type="video/mp4">
+    </video>
+    <div class="tbanner-wrapper">
+      <div class="tbanner-container">
+        <p>Лучший</p>
+        <p>выпускник</p>
+        <p>КНИТУ <span class="tb-sel">2022</span></p>
+      </div>
     </div>
   </section>
 </template>
@@ -22,18 +26,29 @@ export default {
   position: relative;
 }
 .banner-bg {
-  max-width: 50vw;
+  width: 100%;
+  max-height: 85vh;
+  object-fit: cover;
+  overflow:hidden;
   bottom: 0;
-  margin: 5em -13em 0 20vw;
+  margin: 0;
   display: block;
+}
+.tbanner-wrapper {
+  background-color: rgba(255,255,255,0.33);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 .tbanner-container {
   background-color: var(--m-color-gray);
-  position: absolute;
-  left: 54vw;
-  bottom: 40%;
+  margin-left: auto;
   padding: 0.75em 1.5em;
   color: var(--m-color-dark-gray);
+  display: inline-block;
+  position: absolute;
 }
 .tbanner-container p {
   margin: 0;
