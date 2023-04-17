@@ -1,15 +1,15 @@
 <template lang="html">
-  <div class="graduates-list-wrapper">
+  <section class="graduates-list-wrapper">
     <div class="alphabet-fl-wr">
       <div class="alphabet-wrapper">
         <ul>
-          <li v-for="elem in Object.keys(graduates)" :key="elem"><a :href="'#let'+elem">{{ elem }}</a></li>
+          <li v-for="elem in Object.keys(graduates)" :key="elem"><a :href="'#let'+(elem.charCodeAt(0)-'А'.charCodeAt(0))">{{ elem }}</a></li>
         </ul>
       </div>
     </div>
     <div class="graduates-list">
       <div class="graduates-list-block" v-for="graduates_l in Object.keys(graduates)" :key="graduates_l">
-        <h1 class="letter-title"><a :id="'let'+graduates_l"></a>{{ graduates_l }}</h1>
+        <h1 class="letter-title"><a :id="'let'+(graduates_l.charCodeAt(0)-'А'.charCodeAt(0))"></a>{{ graduates_l }}</h1>
         <div class="graduate-cat-wrapper">
           <MiniCard
            v-for="graduate in graduates[graduates_l]" :key="graduate.avatarID"
@@ -27,11 +27,12 @@
             :telephone="graduate.tel"
             :site="graduate.site"
             :workTitle="graduate.thesis"
-            :avatarUrl="graduate.hasAvatar?('http://127.0.0.1/bgrt/api/getimg.php?hash='+graduate.avatarID.toString()):(altImgPath)"/>
+              :avatarUrl="'/bgrt/img_storage/'+graduate.avatarID.toString()+'/avatar.jpg'"
+            :cachedImageSizes="cachedImageSizes"/>
         </div>
       </div>
     </div>
-  </div>
+  </section>
 </template>
 
 <script>
@@ -42,24 +43,32 @@ export default {
   data() {
     return {
         graduates:{},
+        cachedImageSizes:{},
         altImgPath: require("@/assets/nophoto.png")
       };
   },
   created(){
     this.updateGraduates();
+    this.loadCachedImageSzs();
+    this.$forceUpdate();
   },
   components: {
     MiniCard
   },
     methods: {
-      updateGraduates: function() {
-        getrequest("http://127.0.0.1/bgrt/api/getgrd.php").then(resp => {
+      updateGraduates() {
+        getrequest("/bgrt/api/getgrd.php").then(resp => {
           let parsedData = JSON.parse(resp);
           if (Object.keys(parsedData).length>0) {
             this.graduates = parsedData;
           }
         });
-        this.$forceUpdate();
+      },
+      loadCachedImageSzs() {
+        getrequest("/bgrt/api/getimgcashsizes.php").then(resp => {
+          let parsedData = JSON.parse(resp);
+          this.cachedImageSizes = parsedData;
+        });
       }
     }
 }
@@ -106,6 +115,7 @@ export default {
   color: var(--m-color-dark-gray);
   margin: 0;
   padding: 0.25em 2em 0.33em;
+  font-size: 2em;
 }
 .graduate-cat-wrapper {
   display: flex;

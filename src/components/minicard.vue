@@ -1,7 +1,7 @@
 <template lang="html">
   <div class="graduate-mini-card-wrapper">
     <div class="avatar mcard-avatar-wrapper">
-      <img class="mcard-avatar" :src="avatarUrl" @error="setAltImage">
+      <img ref="avatar" class="mcard-avatar" :alt="name" :src="avatarUrl_d" @error="setAltImage">
     </div>
     <div class="mcard-details">
       <div class="data-wrapper">
@@ -17,13 +17,14 @@
       :faculty="faculty"
       :major_code="major_code"
       :major_title="major_title"
-      :avatarUrl="avatarUrl_d"
+      :avatarUrl="avatarUrl"
       :workTitle="workTitle"
       :avgScore="avgScore"
       :achievements="achievements"
       :email="email"
       :telephone="telephone"
       :site="site"
+      :cachedImageSizes="cachedImageSizes"
       v-if="isModalVisible"
       @close="closeModalCard"/>
   </div>
@@ -41,8 +42,8 @@ export default {
       altImgPath: require("@/assets/nophoto.png")
     }
   },
-  created() {
-    this.avatarUrl_d = this.avatarUrl;
+  mounted() {
+    this.loadCachedImage();
   },
   methods: {
       showModalCard() {
@@ -56,6 +57,31 @@ export default {
       setAltImage(evt) {
         evt.target.src = this.altImgPath;
         this.avatarUrl_d = this.altImgPath;
+      },
+      loadCachedImage() {
+        let cw = this.$refs.avatar.clientWidth;
+        let optSize = {w: 0, h: 0};
+        let minDelta;
+        if (this.cachedImageSizes.length>0) {
+          this.cachedImageSizes.forEach((item) => {
+            if (item["crop"]) {
+              if (minDelta!==undefined&&Math.abs(cw-item["w"])<minDelta) {
+                optSize.w = item["w"];
+                optSize.h = item["h"];
+                minDelta = Math.abs(cw-item["w"]);
+              }
+              else if (minDelta===undefined) {
+                optSize.w = item["w"];
+                optSize.h = item["h"];
+                minDelta = Math.abs(cw-item["w"]);
+              }
+            }
+          });
+          this.avatarUrl_d = this.avatarUrl+"?size="+optSize.w+"x"+optSize.h+"&q=90";
+        }
+        else {
+          this.avatarUrl_d = this.avatarUrl;
+        }
       }
     },
   props: {
@@ -73,7 +99,8 @@ export default {
     email: String,
     telephone: String,
     site: String,
-    id: String
+    id: String,
+    cachedImageSizes: Object
   },
   components: {
     ModalCard
@@ -101,9 +128,10 @@ export default {
 .mcard-avatar {
   object-fit: cover;
   width: 100%;
-  max-height: 15vw;
+  height: 15vw;
   margin: 0;
   display: block;
+  background-color: var(--m-color-bg);
 }
 .mcard-details {
   color: var(--m-color-dark-gray);
@@ -134,7 +162,7 @@ export default {
   color: #FFF;
   text-decoration: none;
   border-radius: 0.25em;
-  transition: .25s;
+  transition: background-color .25s;
 }
 .mcard-datails-link a:hover {
   background-color: var(--m-color-red-light);
@@ -148,6 +176,10 @@ and (max-width: 600px) {
   }
   .mcard-avatar {
     max-height: initial;
+    height: auto;
+  }
+  .mcard-details {
+    align-content: start;
   }
 }
 </style>

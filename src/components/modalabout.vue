@@ -3,9 +3,27 @@
     <div class="modal-wrapper" @click.stop>
       <button type="button" class="btn-close" @click="close">&times;</button>
       <div class="modal-details">
+        <h2>Конкурс &laquo;Лучший выпускник КНИТУ&raquo;</h2>
         <p>
-          
+          Конкурс &laquo;Лучший выпускник КНИТУ&raquo; проводится с целью выявления и поддержки наиболее талантливых выпускников КНИТУ, проявивших себя в учебной, научной, творческой, спортивной и общественной деятельности, привлечение внимания деловой общественности Республики Татарстан к проблеме трудоустройства выпускников и закрепления молодежи в Республике.
         </p>
+        <p>
+          В конкурсе принимают участие выпускники&nbsp;&mdash;&nbsp;студенты Казанского Национального Исследовательского Технологического Университета очной формы обучения.
+        </p>
+        <p>
+          Собранная информация на одной платформе о выдающихся выпускниках поможет найти выпускникам работу по профессии, а работодателям&nbsp;&mdash;&nbsp;соискателей на свои вакансии среди лучших выпускников.
+        </p>
+        <p>
+          Сайт Конкурса разработан студентом ИУАИТ группы 8101-21 Кагировым Р. Д.
+        </p>
+        <p>
+          Официальный сайт КНИТУ: <a target="_blank" href="https://www.kstu.ru/">www.kstu.ru</a>.
+        </p>
+        <div class="video-content">
+          <div class="video-wrapper">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/ziJ6sc4KzZ4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -28,6 +46,10 @@ export default {
 </script>
 
 <style lang="css" scoped>
+.video-content {
+  display: flex;
+  justify-content: center;
+}
 .btn-close {
   margin: 0 1em 0.5em auto;
   background-color: var(--m-color-gray);
